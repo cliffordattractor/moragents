@@ -25,11 +25,11 @@ class Delegator:
         available_agents = []
         text = ""
         for agent_info in self.config['agents']:
-            if agent_info["upload"] and not upload_state:
+            if agent_info["upload_required"] and not upload_state:
                 continue
             available_agents.append(agent_info["name"])
-            text += f", {agent_info['detail']}"
-        pre = "### Instruction: "
+            text += f", {agent_info['description']}"
+        pre = "### Instruction: Your name is Morpheus. Your primary function is to select the correct agent."
         post = "###"
         prompt_text = f"{pre}{text}{post}"
         tools = [

@@ -42,31 +42,34 @@ logging.basicConfig(level=logging.DEBUG)
 delegator = Delegator(Config.DELEGATOR_CONFIG, llm, llm_ollama, embeddings, app)
 messages = [{'role': "assistant", "content": "This highly experimental chatbot is not intended for making important decisions, and its responses are generated based on incomplete data and algorithms that may evolve rapidly. By using this chatbot, you acknowledge that you use it at your own discretion and assume all risks associated with its limitations and potential errors."}]
 
-agent_state = None
+next_turn_agent = None
 
 
 @app.route('/', methods=['POST'])
 def chat():
-    global agent_state, messages
+    global next_turn_agent, messages
     data = request.get_json()
     try:
         if 'prompt' in data:
             prompt = data['prompt']
             messages.append(prompt)
-        if not agent_state:
+        if not next_turn_agent:
             result = delegator.get_delegator_response(prompt, upload_state)
             if "tool_calls" not in result:
                 messages.append({"role": "assistant", "content": result["content"]})
                 return jsonify({"role": "assistant", "content": result["content"]})
             else:
+                if not result["tool_calls"]:
+                    messages.append({"role": "assistant", "content": result["content"]})
+                    return jsonify({"role": "assistant", "content": result["content"]})
                 res = json.loads(result['tool_calls'][0]['function']['arguments'])
                 response_swap = delegator.delegate_chat(res["next"], request)
-                if "state" in response_swap.keys():
-                    agent_state = response_swap["state"]
+                if "next_turn_agent" in response_swap.keys():
+                    next_turn_agent = response_swap["next_turn_agent"]
                 response = {"role": response_swap["role"], "content": response_swap["content"]}
         else:
-            response_swap = delegator.delegate_chat(agent_state, request)
-            agent_state = response_swap["state"]
+            response_swap = delegator.delegate_chat(next_turn_agent, request)
+            next_turn_agent = response_swap["next_turn_agent"]
             response = {"role": response_swap["role"], "content": response_swap["content"]}
         messages.append(response)
         return jsonify(response)

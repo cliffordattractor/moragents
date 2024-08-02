@@ -17,23 +17,23 @@ class Config:
             {
                 "path": "rag_agent.src.agent",
                 "class": "RagAgent",
-                "detail": "If the prompt is not a greeting or does not need the other agents always call rag agent.if the prompt requires a background knowledge or context call rag agent, if the question is not related to crypto call rag agent, if the prompt is a question that needs context call rag agent",
+                "description": "If the prompt is not a greeting or does not need the other agents always call rag agent.if the prompt requires a background knowledge or context call rag agent, if the question is not related to crypto call rag agent, if the prompt is a question that needs context call rag agent",
                 "name": "rag agent",
-                "upload": True
+                "upload_required": True
             },
             {
                 "path": "data_agent.src.agent",
                 "class": "DataAgent",
-                "detail": "if the prompt is a question like (price, market cap, fdv) of crypto currencies choose crypto data agent",
+                "description": "if the prompt is a question like (price, market cap, fdv) of crypto currencies choose crypto data agent",
                 "name": "crypto data agent",
-                "upload": False
+                "upload_required": False
             },
             {
                 "path": "swap_agent.src.agent",
                 "class": "SwapAgent",
-                "detail": "if the prompt is related with swapping crypto currencies choose crypto swap agent. like if it is swap 4 eth or swap 4 eth to usdc choose crypto swap agent and if the query is about swapping crypto currencies always choose crypto swap agent",
+                "description": "if the prompt is related with swapping crypto currencies choose crypto swap agent. like if it is swap 4 eth or swap 4 eth to usdc choose crypto swap agent and if the query is about swapping crypto currencies always choose crypto swap agent",
                 "name": "crypto swap agent",
-                "upload": False
+                "upload_required": False
             }
             ]
         }

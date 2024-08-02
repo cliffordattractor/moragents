@@ -104,8 +104,8 @@ class SwapAgent:
 
     def generate_response(self, prompt, chain_id, wallet_address):
         self.context.append(prompt)
-        response, role, state = self.get_response(self.context, chain_id, wallet_address)
-        return response, role, state
+        response, role, next_turn_agent = self.get_response(self.context, chain_id, wallet_address)
+        return response, role, next_turn_agent
 
     def chat(self, request):
         try:
@@ -114,8 +114,8 @@ class SwapAgent:
                 prompt = data['prompt']
                 wallet_address = data['wallet_address']
                 chain_id = data['chain_id']
-                response, role, state = self.generate_response(prompt, chain_id, wallet_address)
-                return {"role": role, "content": response, "state": state}
+                response, role, next_turn_agent = self.generate_response(prompt, chain_id, wallet_address)
+                return {"role": role, "content": response, "next_turn_agent": next_turn_agent}
             else:
                 return {"error": "Missing required parameters"}, 400
         except Exception as e:

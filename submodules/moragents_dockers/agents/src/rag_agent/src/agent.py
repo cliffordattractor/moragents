@@ -46,10 +46,10 @@ class RagAgent:
         # DocumentToolsGenerator class instantiation 
         loader = PyMuPDFLoader(os.path.join(self.UPLOAD_FOLDER,filename))
         docs = loader.load()
-        text_splitter = RecursiveCharacterTextSplitter(chunk_size=500,chunk_overlap=20,length_function=len,is_separator_regex=False)
+        text_splitter = RecursiveCharacterTextSplitter(chunk_size=1024,chunk_overlap=20,length_function=len,is_separator_regex=False)
         split_documents = text_splitter.split_documents(docs)
         vector_store = FAISS.from_documents(split_documents, self.embedding)
-        self.retriever = vector_store.as_retriever()
+        self.retriever = vector_store.as_retriever(search_kwargs={"k": 7})
 
 
     def upload_file(self,request):
